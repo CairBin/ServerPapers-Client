@@ -4,6 +4,8 @@ import osUtils from 'os-utils'
 import { resolve } from 'path'
 import { clearInterval } from 'timers'
 import diskinfo from 'node-disk-info'
+import si from 'systeminformation'
+import sd from 'silly-datetime'
 
 const formatSecond = (second)=>{
     const days = Math.floor(second / 86400);
@@ -11,7 +13,9 @@ const formatSecond = (second)=>{
     const minutes = Math.floor(((second % 86400) % 3600) / 60);
     const seconds = Math.floor(((second % 86400) % 3600) % 60);
 
-    return days+'day'+hours+'h'+minutes+'min'+seconds+'s'
+    return {
+        days,hours,minutes,seconds
+    }
 }
 
 class Status{
@@ -21,9 +25,11 @@ class Status{
         this.time = null
         this.disk = null
         this.interval = null
+        this.network = null
+        this.system = null
 
         this.updateAsync()
-        this.diskInfoAsync()
+        this.systemInfoAsync()
         
     }
 
@@ -32,7 +38,21 @@ class Status{
             this.memoryInfoAsync()
             this.cpuInfoAsync()
             this.upTimeAsync()
+            this.diskInfoAsync()
+            this.networkInfoAsync()
         },500)
+    }
+
+    async systemInfoAsync() {
+        si.osInfo().then(data => {
+            this.system = {
+                platform: data.platform,
+                distro: data.distro,
+                codename: data.codename,
+                hostname: data.hostname,
+                arch:data.arch
+            }
+        })
     }
 
     async memoryInfoAsync(){
@@ -49,10 +69,11 @@ class Status{
     }
 
     async upTimeAsync(){
-
+        
         var data = {
             sysUpTime:formatSecond(osUtils.sysUptime()),
-            processUpTime:formatSecond(osUtils.processUptime()),
+            processUpTime: formatSecond(osUtils.processUptime()),
+            sysTime:sd.format(new Date(),'YYYY-MM-DD HH:mm:ss')
         }
     
         this.time = data
@@ -62,20 +83,22 @@ class Status{
         osUtils.cpuUsage((val)=>{
             this.cpu = {
                 usage:(val*100.0).toFixed(2)+'%',
-                number:osUtils.cpuCount(),
-                platform:osUtils.platform()
+                number:osUtils.cpuCount()
             }
         })
     }
 
     async getInfoAsync(){
         return new Promise((res,rej)=>{
-            if(this.cpu && this.memory && this.time)
+            if(this.cpu && this.memory && this.time && this.disk && this.system && this.network)
             {
                 var data = {
                     cpu:this.cpu,
                     memory:this.memory,
-                    time:this.time
+                    time: this.time,
+                    system: this.system,
+                    disk: this.disk,
+                    network:this.network
                 }
                 res(data)
             }else{
@@ -84,28 +107,15 @@ class Status{
         })
     }
 
-    async diskInfoAsync(){
-        diskinfo.getDiskInfo().then(disks=>{
-            var total = 0
-            var used = 0
-            var free = 0
-            
-            for(const disk of disks){
-                console.log(disk.mounted)
-                total+=disk.blocks
-                used+=disk.used
-                free+=disk.available
-            }
+    async diskInfoAsync() {
+        si.fsSize().then(data => {
+            this.disk = data
+        })
+    }
 
-            this.disk={
-                total:total/1024/1024,
-                used:used/1024/1024,
-                free:free/1024/1024
-            }
-            console.log(this.disk)
-
-        }).catch((err)=>{
-            console.log(err)
+    async networkInfoAsync() {
+        si.networkStats().then(data => {
+            this.network = data
         })
     }
 

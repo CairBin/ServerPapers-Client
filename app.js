@@ -16,12 +16,6 @@ async function main(){
             sock.sendAsync(res)
         }).catch((err)=>{
             console.log(err)
-            sock.stop(()=>{
-                console.log('Socket disconnected!')
-            })
-            info.stop(()=>{
-                console.log('Stopped getting information!')
-            })
         })
     },1000)
 }
