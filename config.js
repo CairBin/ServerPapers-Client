@@ -1,5 +1,5 @@
 export default{
-    "serverUrl":"http://127.0.0.1:8248",
+    "serverUrl":"http://127.0.0.1:8244",
     "loginInfo":{
         "user":"test",
         "pwd":"123456"
