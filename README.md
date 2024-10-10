@@ -250,9 +250,10 @@ builder.run();
 
 列举主要使用的第三方库（并非全部）
 
-* 获取硬件信息(systeminformation--www.npmjs.com)[https://www.npmjs.com/package/systeminformation]
-* 依赖注入(inversifyJS--github.com)[https://github.com/inversify/InversifyJS]
-* 获取系统信息(os-utils--github.com)[https://github.com/oscmejia/os-utils]
+* 获取硬件信息[systeminformation--www.npmjs.com](https://www.npmjs.com/package/systeminformation)
+* 依赖注入[inversifyJS--github.com](https://github.com/inversify/InversifyJS)
+* 获取系统信息[os-utils--github.com](https://github.com/oscmejia/os-utils)
 * 密码学相关算法crypto
-* 配置文件管理(config--www.npmjs.com)[https://www.npmjs.com/package/config]
-* 日志记录器(pino--github.com)[https://github.com/pinojs/pino]
+* 配置文件管理[config--www.npmjs.com](https://www.npmjs.com/package/config)
+* 日志记录器[pino--github.com](https://github.com/pinojs/pino)
+* SocketIO
