@@ -1,0 +1,52 @@
+{
+  "name": "server_papers_client",
+  "version": "2.0.0",
+  "description": "ServerPapers typescript client",
+  "main": "index.js",
+  "repository": "https://github.com/CairBin/ServerPapers-Client",
+  "author": "Xinyi Liu(CairBin)",
+  "license": "MIT",
+  "scripts": {
+    "start": "ts-node-dev --respawn ./src/app.ts",
+    "lint": "eslint src/**/*.ts",
+    "jest": "jest --verbose"
+  },
+  "jest": {
+    "rootDir": "tests",
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.13",
+    "@types/node": "^22.7.5",
+    "@types/pino": "^7.0.5",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@types/config": "^3.3.5",
+    "@types/os-utils": "^0.0.4",
+    "config": "^3.3.12",
+    "dayjs": "^1.11.13",
+    "inversify": "^6.0.2",
+    "os-utils": "^0.0.14",
+    "pino": "^9.4.0",
+    "pino-pretty": "^11.2.2",
+    "reflect-metadata": "^0.2.2",
+    "socket.io-client": "^4.8.0",
+    "systeminformation": "^5.23.5"
+  }
+}
