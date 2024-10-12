@@ -47,6 +47,7 @@ export interface CpuInfo{
 // 单个网卡信息
 export interface NetworkInterface{
     name:string;
+    operstate:string;
     rxSec:string;
     txSec:string;
     rxBytes:string;

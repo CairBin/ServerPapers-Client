@@ -165,6 +165,7 @@ export interface CpuInfo{
 
 export interface NetworkInterface{
     name:string;
+    operstate:string;   //网卡状态
     rxSec:string;
     txSec:string;
     rxBytes:string;

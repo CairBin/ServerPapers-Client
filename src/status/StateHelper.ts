@@ -79,11 +79,14 @@ export default class StateHelper implements IStateHelper{
                     this.logger.debug('', info)
                     array.push({
                         name:info.iface,
+                        operstate:info.operstate,
                         rxSec:info.rx_sec?info.rx_sec.toString():'null',
                         rxBytes:info.rx_bytes?info.rx_bytes.toString():'null',
                         txSec:info.tx_sec?info.tx_sec.toString():'null',
                         txBytes:info.tx_bytes?info.tx_bytes.toString():'null',
                     });
+
+                    
                 });
 
                 resolve({
