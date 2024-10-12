@@ -38,7 +38,8 @@ export default {
     rejectUnauthorized:true,
     user: 'test',       // 用于标识Client
     pwd: '123456',      // 验证口令
-    hash: HashType.SM3  // 口令所使用的Hash算法
+    hash: HashType.SM3, // 口令所使用的Hash算法
+    sendSpeed: 2000,    // 2000ms发送一次数据
 }
 ```
 
@@ -122,7 +123,7 @@ interface HelloMessage{
 
 ```
 
-同时，客户端监听来自服务端的`ready`事件，该事件不携带数据，监听到此事件后将启动`ReadyListener`的定时器，每1秒钟发送一次本机的硬件信息。
+同时，客户端监听来自服务端的`ready`事件，该事件不携带数据，监听到此事件后将启动`ReadyListener`的定时器，按照配置文件所指定的时间间隔发送一次本机的硬件信息。
 
 发送硬件信息的事件为`clientData`，格式封装如下：
 ```ts

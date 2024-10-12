@@ -58,6 +58,6 @@ export default class ReadyListener implements ISocketListener{
                 token: this.hash.hash(config.get<string>('pwd')),
             }
             socket.emit('clientData',sendMsg);
-        }, 1000);
+        }, config.get<number>('sendSpeed'));
     }
 }

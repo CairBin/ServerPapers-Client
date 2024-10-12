@@ -14,5 +14,6 @@ export default {
     rejectUnauthorized:true,
     user: 'test',       // 用于标识Client
     pwd: '123456',      // 验证口令
-    hash: HashType.SM3  // 口令所使用的Hash算法
+    hash: HashType.SM3, // 口令所使用的Hash算法
+    sendSpeed: 2000,    // 2000ms发送一次数据
 }
