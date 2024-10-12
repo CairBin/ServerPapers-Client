@@ -15,6 +15,7 @@ import ILogger from "../logger/ILogger";
 import { inject, injectable } from "inversify";
 import IStateHelper from "../status/IStateHelper";
 import config from 'config';
+import IHash from "../crypto/IHash";
 
 // 发送信息的格式
 interface ClientMessage{
@@ -28,6 +29,9 @@ interface ClientMessage{
 export default class ReadyListener implements ISocketListener{
     @inject("ILogger")
     private logger!:ILogger;
+
+    @inject("IHash")
+    hash!:IHash;
 
     @inject("IStateHelper")
     private stateHelper!: IStateHelper;
@@ -51,7 +55,7 @@ export default class ReadyListener implements ISocketListener{
                     time: await this.stateHelper.getTimeInfo()
                 },
                 user:config.get<string>('user'),
-                token: config.get<string>('pwd')
+                token: this.hash.hash(config.get<string>('pwd')),
             }
             socket.emit('clientData',sendMsg);
         }, 1000);
