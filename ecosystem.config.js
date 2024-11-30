@@ -1,11 +1,12 @@
 module.exports = {
   apps: [
     {
-      name: "ServerPapersClient",
-      script: "./src/app.ts",
-      interpreter: "./node_modules/.bin/ts-node",
-      interpreter_args: '-r ts-node/register -r tsconfig-paths/register',
-      exec_mode: "cluster",
+      name: 'ServerPapersClient',
+      script: 'build/app.js', // 编译后的入口文件
+      watch: false, // 生产环境通常关闭监听
+      env: {
+        NODE_ENV: 'production',
+      },
     },
   ],
 };
