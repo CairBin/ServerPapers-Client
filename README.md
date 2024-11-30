@@ -85,9 +85,11 @@ yarn global bin
 
 **请手动并把输出的目录添加到系统环境变量中。**
 
-将typescript添加到PM2
+安装typescript并编译成js
+
 ```sh
-pm2 install typescript
+yarn global add typescript
+tsc
 ```
 
 使用PM2启动项目
