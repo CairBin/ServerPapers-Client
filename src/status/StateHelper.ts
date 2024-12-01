@@ -10,13 +10,15 @@
 import IStateHelper from "./IStateHelper";
 import os from 'os';
 import si from 'systeminformation';
-import { CpuInfo, SystemInfo, MemoryInfo, NetworkInfo, DiskInfo, NetworkInterface, DiskArea, TimeInfo } from "./StateFormat";
+import { CpuInfo, SystemInfo, MemoryInfo, NetworkInfo, DiskInfo, NetworkInterface, DiskArea, TimeInfo, InfoData, PortProcess, Port } from "./StateFormat";
 import { inject, injectable } from "inversify";
 import 'reflect-metadata';
-import osUtils from 'os-utils';
+import osUtils, { getProcesses } from 'os-utils';
 import ILogger, {LogDebug} from "../logger/ILogger";
 import { formatSecond } from "../utils/DateFormat";
 import dayjs from "dayjs";
+import psList from "ps-list";
+import childProcess from "child_process";
 
 function cpuUsage():Promise<number>{
     return new Promise((resolve,rejects)=>{
@@ -26,11 +28,75 @@ function cpuUsage():Promise<number>{
     });
 }
 
+class PortCache{
+    private data: Port | null;     // 缓存数据
+    private lastUpdated: number;   //上次更新的时间戳
+    private ttl: number;           // 生存时间
+
+    constructor(){
+        this.data = null;
+        this.lastUpdated = 0;
+        this.ttl = 10000;
+    }
+
+    async getPortProcess(){
+        const now = Date.now();
+        if(this.data && now - this.lastUpdated < this.ttl){
+            return this.data;
+        }
+
+        this.data = await this._getPortProcess();
+        this.lastUpdated = now;
+        return this.data;
+    }
+
+    private async _getPortProcess() : Promise<Port>{
+        return new Promise(async (resolve, rejects)=>{
+            try{
+                const output = childProcess.execSync('lsof -i -P -n | grep LISTEN').toString();
+                const lines = output.split('\n');
+                const ports:(PortProcess | undefined)[] = lines.map((line) => {
+                    const parts = line.split(/\s+/);
+                    const portInfo = parts[8]?.split(':');
+                    if (portInfo?.[1]) {
+                        return {
+                            name: parts[0],
+                            port: portInfo[1],
+                            pid: parseInt(parts[1], 10),
+                        };
+                    }
+                }).filter(Boolean);
+    
+                const processes = await psList();
+    
+                let portInfo:Port = {
+                    portProcess: []
+                };
+    
+                ports.forEach((info : PortProcess | undefined) => {
+                    if(info === undefined) return;
+                    const process = processes.find((p) => p.pid === info.pid);
+                    if (process) {
+                        portInfo.portProcess.push(info);
+                    }
+                });
+                resolve(portInfo);
+            }catch(err){
+                rejects(err);
+            }
+        });
+    }
+}
+
+
+
 
 @injectable()
 export default class StateHelper implements IStateHelper{
     @inject("ILogger")
     private logger!: ILogger;
+
+    private portCache: PortCache = new PortCache();
     
     @LogDebug
     async getCpuInfo(): Promise<CpuInfo> {
@@ -72,7 +138,7 @@ export default class StateHelper implements IStateHelper{
     @LogDebug
     getNetworkInfo(): Promise<NetworkInfo> {
         return new Promise((resolve,reject)=>{
-            si.networkStats().then((data)=>{
+            si.networkStats().then(async (data)=>{
                 let array = new Array<NetworkInterface>();
 
                 data.forEach((info)=>{
@@ -90,7 +156,8 @@ export default class StateHelper implements IStateHelper{
                 });
 
                 resolve({
-                    device:array
+                    device:array,
+                    port: await this.portCache.getPortProcess()
                 })
 
             }).catch((err)=>{
@@ -132,6 +199,17 @@ export default class StateHelper implements IStateHelper{
         }
 
         return data;
+    }
+
+    async getInfoData(): Promise<InfoData>{
+        return {
+            cpu:await this.getCpuInfo(),
+            system: await this.getSystemInfo(),
+            memory: await this.getMemoryInfo(),
+            network: await this.getNetworkInfo(),
+            disk: await this.getDiskInfo(),
+            time: await this.getTimeInfo(),
+        }
     }
 
 }

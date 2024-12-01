@@ -7,7 +7,7 @@
  * Copyright (c) 2024 Xinyi Liu(CairBin) cairbin@aliyun.com
  */
 
-import {CpuInfo, SystemInfo, MemoryInfo, NetworkInfo, DiskInfo, TimeInfo} from './StateFormat';
+import {CpuInfo, SystemInfo, MemoryInfo, NetworkInfo, DiskInfo, TimeInfo, InfoData} from './StateFormat';
 
 // 每个方法都应该是通过Promise对象统一返回值
 export default interface IStateHelper{
@@ -17,4 +17,5 @@ export default interface IStateHelper{
     getNetworkInfo():   Promise<NetworkInfo>; 
     getDiskInfo()   :   Promise<DiskInfo>;
     getTimeInfo()   :   Promise<TimeInfo>;
+    getInfoData()   :   Promise<InfoData>;
 }

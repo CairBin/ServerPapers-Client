@@ -44,6 +44,17 @@ export interface CpuInfo{
     number:string;  // 核心数
 }
 
+// 进程——端口信息
+export interface PortProcess{
+    port: string;
+    name: string;
+    pid: Number;
+}
+
+export interface Port{
+    portProcess: Array<PortProcess>;
+}
+
 // 单个网卡信息
 export interface NetworkInterface{
     name:string;
@@ -57,6 +68,7 @@ export interface NetworkInterface{
 // 这个才是用于返回所有网卡信息的接口
 export interface NetworkInfo{
     device:Array<NetworkInterface>;
+    port: Port;
 }
 
 // 磁盘分区信息
@@ -71,4 +83,14 @@ export interface DiskArea{
 // 这个才是用于返回所有磁盘分区信息的接口
 export interface DiskInfo{
     areas:Array<DiskArea>;
+}
+
+// 发送给服务器的数据类型格式
+export interface InfoData{
+    cpu: CpuInfo;
+    system: SystemInfo;
+    memory: MemoryInfo;
+    network: NetworkInfo;
+    disk: DiskInfo;
+    time: TimeInfo;
 }
