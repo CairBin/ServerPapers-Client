@@ -5,7 +5,7 @@ export default {
     url: 'http://127.0.0.1:8892/',
     // CA的证书，http模式可以不填下面数组
     ca:[
-        '/Users/cairbin/Others/program/nodejs/sp/client/certificate/cert.pem',
+        // '/Users/cairbin/Others/program/nodejs/sp/client/certificate/cert.pem',
     ],
     /* http模式此字段无效https
     *  https如果为false容易受到中间人攻击
