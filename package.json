@@ -45,7 +45,7 @@
     "os-utils": "^0.0.14",
     "pino": "^9.4.0",
     "pino-pretty": "^11.2.2",
-    "ps-list": "^8.1.1",
+    "ps-list": "^7.2.0",
     "reflect-metadata": "^0.2.2",
     "socket.io-client": "^4.8.0",
     "systeminformation": "^5.23.5"
